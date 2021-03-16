@@ -81,9 +81,15 @@ longiz = 0
 colatz = 0
 rxy = 0
 z = 0
-y = 0
-x = 0
 maxColat = 0
+the_image: List[List[number]] = []
+x = 0
+y = 0
+def pixelvalue(the_image: List[List[number]], x: number, y: number):
+    if x >= 0 and x < 20 and (y >= 0 and y < 20):
+        return the_image[Math.floor(y)][Math.floor(x)]
+    else:
+        return 0
 the_image = image()
 pi025 = Math.atan2(1, 1)
 maxColat = pi025 * 1.5
@@ -101,7 +107,7 @@ def on_forever():
             for x1 in range(5):
                 x2 = x + x1
                 if x2 >= 0 and x2 < 20:
-                    led.plot_brightness(x1, y1, the_image[Math.floor(y2)][Math.floor(x2)] * 255)
+                    led.plot_brightness(x1, y1, 0 * 255)
                 else:
                     led.unplot(x1, y1)
         else:

@@ -33,8 +33,17 @@ function image () {
     row19 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     return [row00, row01, row02, row03, row04, row05, row06, row07, row08, row09, row10, row11, row12, row13, row14, row15, row16, row17, row18, row19]
 }
+let pix = 0
+let pix11 = 0
+let pix10 = 0
+let pix01 = 0
+let pix00 = 0
 let x2 = 0
 let y2 = 0
+let dy = 0
+let dx = 0
+let iy = 0
+let ix = 0
 let joyposition: number[] = []
 let row19: number[] = []
 let row18: number[] = []
@@ -74,21 +83,45 @@ basic.forever(function () {
     joyposition = joystick()
     x = joyposition[0] * -20 + 8
     y = joyposition[1] * -20 + 8
+    ix = Math.floor(x)
+    iy = Math.floor(y)
+    dx = x - ix
+    dy = y - iy
     for (let y1 = 0; y1 <= 4; y1++) {
-        y2 = y + y1
-        if (y2 >= 0 && y2 < 20) {
-            for (let x1 = 0; x1 <= 4; x1++) {
-                x2 = x + x1
-                if (x2 >= 0 && x2 < 20) {
-                    led.plotBrightness(x1, y1, the_image[Math.floor(y2)][Math.floor(x2)] * 255)
-                } else {
-                    led.unplot(x1, y1)
-                }
+        y2 = iy + y1
+        for (let x1 = 0; x1 <= 4; x1++) {
+            x2 = ix + x1
+            if (y2 >= 0 && y2 < 20 && (x2 >= 0 && x2 < 20)) {
+                pix00 = the_image[y2][x2]
+            } else {
+                pix00 = 0
             }
-        } else {
-            for (let x1 = 0; x1 <= 4; x1++) {
-                led.unplot(x1, y1)
+            if (y2 >= -1 && y2 < 19 && (x2 >= 0 && x2 < 20)) {
+                pix01 = the_image[y2 + 1][x2]
+            } else {
+                pix01 = 0
             }
+            if (y2 >= 0 && y2 < 20 && (x2 >= -1 && x2 < 19)) {
+                pix10 = the_image[y2][x2 + 1]
+            } else {
+                pix10 = 0
+            }
+            if (y2 >= -1 && y2 < 19 && (x2 >= -1 && x2 < 19)) {
+                pix11 = the_image[y2 + 1][x2 + 1]
+            } else {
+                pix11 = 0
+            }
+            pix00 = pix00 * ((1 - dx) * (1 - dy))
+            pix01 = pix01 * ((1 - dx) * dy)
+            pix10 = pix10 * (dx * (1 - dy))
+            pix11 = pix11 * (dx * dy)
+            pix = pix00 + pix01 + pix10 + pix11
+            if (pix < 0.5) {
+                pix = (pix * 2) ** 2.5 / 2
+            } else {
+                pix = 1 - ((1 - pix) * 2) ** 2.5 / 2
+            }
+            led.plotBrightness(x1, y1, pix * 255)
         }
     }
 })
