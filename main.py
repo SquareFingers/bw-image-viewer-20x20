@@ -1,16 +1,17 @@
-function joystick () {
+def joystick():
+    global x, y, z, rxy, colatz, longiz, x1z, y1z
     x = input.acceleration(Dimension.X)
     y = input.acceleration(Dimension.Y)
     z = input.acceleration(Dimension.Z)
     rxy = Math.sqrt(x * x + y * y)
     colatz = Math.atan2(rxy, 0 - z)
-    colatz = Math.min(colatz / maxColat, 1)
+    colatz = min(colatz / maxColat, 1)
     longiz = Math.atan2(y, x)
     x1z = colatz * Math.cos(longiz)
     y1z = colatz * Math.sin(longiz)
     return [x1z, y1z]
-}
-function image () {
+def image():
+    global row00, row01, row02, row03, row04, row05, row06, row07, row08, row09, row10, row11, row12, row13, row14, row15, row16, row17, row18, row19
     row00 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     row01 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     row02 = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -31,64 +32,79 @@ function image () {
     row17 = [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0]
     row18 = [0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0]
     row19 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    return [row00, row01, row02, row03, row04, row05, row06, row07, row08, row09, row10, row11, row12, row13, row14, row15, row16, row17, row18, row19]
-}
-let x2 = 0
-let y2 = 0
-let joyposition: number[] = []
-let row19: number[] = []
-let row18: number[] = []
-let row17: number[] = []
-let row16: number[] = []
-let row15: number[] = []
-let row14: number[] = []
-let row13: number[] = []
-let row12: number[] = []
-let row11: number[] = []
-let row10: number[] = []
-let row09: number[] = []
-let row08: number[] = []
-let row07: number[] = []
-let row06: number[] = []
-let row05: number[] = []
-let row04: number[] = []
-let row03: number[] = []
-let row02: number[] = []
-let row01: number[] = []
-let row00: number[] = []
-let y1z = 0
-let x1z = 0
-let longiz = 0
-let colatz = 0
-let rxy = 0
-let z = 0
-let y = 0
-let x = 0
-let maxColat = 0
-let the_image = image()
-let pi025 = Math.atan2(1, 1)
+    return [row00,
+        row01,
+        row02,
+        row03,
+        row04,
+        row05,
+        row06,
+        row07,
+        row08,
+        row09,
+        row10,
+        row11,
+        row12,
+        row13,
+        row14,
+        row15,
+        row16,
+        row17,
+        row18,
+        row19]
+x2 = 0
+y2 = 0
+joyposition: List[number] = []
+row19: List[number] = []
+row18: List[number] = []
+row17: List[number] = []
+row16: List[number] = []
+row15: List[number] = []
+row14: List[number] = []
+row13: List[number] = []
+row12: List[number] = []
+row11: List[number] = []
+row10: List[number] = []
+row09: List[number] = []
+row08: List[number] = []
+row07: List[number] = []
+row06: List[number] = []
+row05: List[number] = []
+row04: List[number] = []
+row03: List[number] = []
+row02: List[number] = []
+row01: List[number] = []
+row00: List[number] = []
+y1z = 0
+x1z = 0
+longiz = 0
+colatz = 0
+rxy = 0
+z = 0
+y = 0
+x = 0
+maxColat = 0
+the_image = image()
+pi025 = Math.atan2(1, 1)
 maxColat = pi025 * 1.5
-let angleFactor = pi025 / 45
-basic.forever(function () {
+angleFactor = pi025 / 45
+
+def on_forever():
+    global joyposition, x, y, y2, x2
     basic.pause(50)
     joyposition = joystick()
     x = joyposition[0] * -20 + 8
     y = joyposition[1] * -20 + 8
-    for (let y1 = 0; y1 <= 4; y1++) {
+    for y1 in range(5):
         y2 = y + y1
-        if (y2 >= 0 && y2 < 20) {
-            for (let x1 = 0; x1 <= 4; x1++) {
+        if y2 >= 0 and y2 < 20:
+            for x1 in range(5):
                 x2 = x + x1
-                if (x2 >= 0 && x2 < 20) {
-                    led.plotBrightness(x1, y1, the_image[Math.floor(y2)][Math.floor(x2)] * 255)
-                } else {
+                if x2 >= 0 and x2 < 20:
+                    led.plot_brightness(x1, y1, the_image[Math.floor(y2)][Math.floor(x2)] * 255)
+                else:
                     led.unplot(x1, y1)
-                }
-            }
-        } else {
-            for (let x1 = 0; x1 <= 4; x1++) {
-                led.unplot(x1, y1)
-            }
-        }
-    }
-})
+        else:
+            for x12 in range(5):
+                led.unplot(x12, y1)
+basic.forever(on_forever)
