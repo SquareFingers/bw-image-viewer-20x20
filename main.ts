@@ -34,6 +34,10 @@ function image () {
     return [row00, row01, row02, row03, row04, row05, row06, row07, row08, row09, row10, row11, row12, row13, row14, row15, row16, row17, row18, row19]
 }
 let pix = 0
+let fpix11 = 0
+let fpix10 = 0
+let fpix01 = 0
+let fpix00 = 0
 let pix11 = 0
 let pix10 = 0
 let pix01 = 0
@@ -74,10 +78,12 @@ let z = 0
 let y = 0
 let x = 0
 let maxColat = 0
+led.setDisplayMode(DisplayMode.Greyscale)
 let the_image = image()
 let pi025 = Math.atan2(1, 1)
 maxColat = pi025 * 1.5
 let angleFactor = pi025 / 45
+let antialiaspow = 7
 basic.forever(function () {
     basic.pause(50)
     joyposition = joystick()
@@ -111,17 +117,17 @@ basic.forever(function () {
             } else {
                 pix11 = 0
             }
-            pix00 = pix00 * ((1 - dx) * (1 - dy))
-            pix01 = pix01 * ((1 - dx) * dy)
-            pix10 = pix10 * (dx * (1 - dy))
-            pix11 = pix11 * (dx * dy)
-            pix = pix00 + pix01 + pix10 + pix11
+            fpix00 = fpix00 * ((1 - dx) * (1 - dy))
+            fpix01 = fpix01 * ((1 - dx) * dy)
+            fpix10 = fpix10 * (dx * (1 - dy))
+            fpix11 = fpix11 * (dx * dy)
+            pix = fpix00 + fpix01 + fpix10 + fpix11
             if (pix < 0.5) {
-                pix = (pix * 2) ** 2.5 / 2
+                pix = (pix * 2) ** antialiaspow / 2
             } else {
-                pix = 1 - ((1 - pix) * 2) ** 2.5 / 2
+                pix = 1 - ((1 - pix) * 2) ** antialiaspow / 2
             }
-            led.plotBrightness(x1, y1, pix * 255)
+            led.plotBrightness(x1, y1, pix00 * 255)
         }
     }
 })
